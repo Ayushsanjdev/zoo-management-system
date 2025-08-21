@@ -22,6 +22,11 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  feedingRecords FeedingRecord[]
+  healthRecords  HealthRecord[]   @relation("VetHealthRecords")
+  enclosureStaff EnclosureStaff[]
 }
 
 enum Role {
@@ -29,4 +34,82 @@ enum Role {
   STAFF
   VET
   USER
+}
+
+model Animal {
+  id             String   @id @default(uuid())
+  name           String
+  species        String
+  scientificName String?
+  age            Int?
+  gender         String?
+  healthStatus   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  enclosure   Enclosure? @relation(fields: [enclosureId], references: [id])
+  enclosureId String?
+
+  feedingRecords FeedingRecord[]
+  healthRecords  HealthRecord[]
+}
+
+model Enclosure {
+  id        String   @id @default(uuid())
+  name      String
+  type      String
+  capacity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  animals        Animal[]
+  enclosureStaff EnclosureStaff[]
+}
+
+model EnclosureStaff {
+  id         String   @id @default(uuid())
+  assignedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  staff   User   @relation(fields: [staffId], references: [id])
+  staffId String
+
+  enclosure   Enclosure @relation(fields: [enclosureId], references: [id])
+  enclosureId String
+}
+
+model FeedingRecord {
+  id          String   @id @default(uuid())
+  foodType    String
+  quantity    String?
+  feedingTime DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  staff   User   @relation(fields: [staffId], references: [id])
+  staffId String
+
+  animal   Animal @relation(fields: [animalId], references: [id])
+  animalId String
+}
+
+model HealthRecord {
+  id          String   @id @default(uuid())
+  checkupDate DateTime
+  notes       String
+  medication  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  animal   Animal @relation(fields: [animalId], references: [id])
+  animalId String
+
+  vet   User   @relation("VetHealthRecords", fields: [vetId], references: [id])
+  vetId String
 }
