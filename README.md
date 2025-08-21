@@ -3,4 +3,4 @@
 #### Tech stack:
 - Frontend: React, Shadcn UI
 - Backend: Express
-- DB: Redis
+- DB: Postgres
