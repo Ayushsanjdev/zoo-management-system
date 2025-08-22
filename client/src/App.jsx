@@ -1,33 +1,54 @@
-import React, { useState } from "react";
-import SafariAnimals from "./components/common/SafariAnimals";
-import BackgroundDecoration from "./components/common/BackgroundDecoration";
-import Header from "./components/layout/Header";
-import DashboardContent from "./components/dashboard/DashboardContents";
+import React from "react";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Dashboard from "./pages/Dashboard";
+import LoginPage from "./pages/Login";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
+import PublicRoute from "./components/routes/PublicRoute";
 
-function App() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+export default function App() {
   return (
-    <div className='min-h-screen bg-gradient-to-br from-green-900 via-emerald-800 to-green-900 relative overflow-hidden'>
-      {/* Background Elements */}
-      <SafariAnimals />
-      <div className='relative'>
-        <BackgroundDecoration position='top' />
-        <BackgroundDecoration position='bottom' />
-      </div>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<RedirectRoot />} />
 
-      {/* Main Content */}
-      <div className='relative z-10'>
-        <Header
-          mobileMenuOpen={mobileMenuOpen}
-          setMobileMenuOpen={setMobileMenuOpen}
-        />
-        <main>
-          <DashboardContent />
-        </main>
-      </div>
-    </div>
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 
-export default App;
+function RedirectRoot() {
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Loading...</p>;
+
+  return user ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    <Navigate to="/login" replace />
+  );
+}
