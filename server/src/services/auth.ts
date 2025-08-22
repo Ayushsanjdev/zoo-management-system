@@ -1,9 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserRole } from "../types";
-import { AppError } from "../utils/AppError";
-import { LoginInput, RegisterInput, UpdateInput } from "../validation/auth";
 import prisma from "../prisma/client";
+import { AppError } from "../utils/AppError";
+import { LoginInput, RegisterInput } from "../validation/auth";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
