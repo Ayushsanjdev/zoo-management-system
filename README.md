@@ -1,2 +1,6 @@
-# zoo-management-system
-![alt text](<diagram (9).svg>)
+### ZOO management system
+
+#### Tech stack:
+- Frontend: React, Shadcn UI
+- Backend: Express
+- DB: Postgres
