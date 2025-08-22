@@ -1,15 +1,12 @@
 import express from "express";
-<<<<<<< HEAD
 import { errorHandler } from "./middleware/error";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
-=======
 import animalRoutes from './routes/animal.routes';
 import enclosureRoutes from './routes/enclosure.routes';
 import enclosureStaffRoutes from './routes/enclosureStaff.routes';
 import feedingRoutes from './routes/feedingRecord.routes';
 import healthCheckRoutes from './routes/healthRecord.routes';
->>>>>>> api_and_schema
 
 const app = express();
 app.use(express.json());
