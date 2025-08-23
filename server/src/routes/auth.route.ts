@@ -1,18 +1,19 @@
 import { Router } from "express";
-import { login, register } from "../controllers/auth";
+import { AuthController } from "../controllers/auth.controller";
 import { authenticateToken, authorizeAdmin } from "../middleware/auth";
 import { validate } from "../middleware/validate";
 import { loginSchema, registerSchema } from "../validation/auth";
 
 const router = Router();
+const controller = new AuthController();
 
 router.post(
   "/register",
   validate(registerSchema),
   authenticateToken,
   authorizeAdmin,
-  register
+  controller.register
 );
-router.post("/login", validate(loginSchema), login);
+router.post("/login", validate(loginSchema), controller.login);
 
 export default router;

@@ -1,7 +1,7 @@
 import express from "express";
 import { errorHandler } from "./middleware/error";
 import { corsMiddleware, securityHeaders } from "./middleware/auth";
-import authRoutes from "./routes/auth";
+import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user";
 import animalRoutes from "./routes/animal.routes";
 import enclosureRoutes from "./routes/enclosure.routes";
