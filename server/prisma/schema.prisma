@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -15,71 +9,80 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
+  id             String           @id @default(uuid())
+  name           String
+  email          String           @unique
+  password       String
+  role           Role             @default(USER)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  enclosureStaff EnclosureStaff[]
   feedingRecords FeedingRecord[]
   healthRecords  HealthRecord[]   @relation("VetHealthRecords")
-  enclosureStaff EnclosureStaff[]
-}
 
-enum Role {
-  ADMIN
-  STAFF
-  VET
-  USER
+  @@index([role])
+  @@index([createdAt])
 }
 
 model Animal {
-  id             String   @id @default(uuid())
+  id             String          @id @default(uuid())
   name           String
   species        String
   scientificName String?
   age            Int?
   gender         String?
   healthStatus   String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  // Relations
-  enclosure   Enclosure? @relation(fields: [enclosureId], references: [id])
-  enclosureId String?
-
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  enclosureId    String?
+  enclosure      Enclosure?      @relation(fields: [enclosureId], references: [id])
   feedingRecords FeedingRecord[]
   healthRecords  HealthRecord[]
+
+  @@index([species])
+  @@index([healthStatus])
+  @@index([gender])
+  @@index([enclosureId])
+  @@index([age])
+  @@index([createdAt])
+  @@index([name])
+  @@index([scientificName])
+  @@index([species, healthStatus])
+  @@index([enclosureId, species])
 }
 
 model Enclosure {
-  id        String   @id @default(uuid())
-  name      String
-  type      String
-  capacity  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
+  id             String           @id @default(uuid())
+  name           String
+  type           String
+  capacity       Int
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
   animals        Animal[]
   enclosureStaff EnclosureStaff[]
+
+  @@index([type])
+  @@index([capacity])
+  @@index([createdAt])
+  @@index([name])
 }
 
 model EnclosureStaff {
-  id         String   @id @default(uuid())
-  assignedAt DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  staff   User   @relation(fields: [staffId], references: [id])
-  staffId String
-
-  enclosure   Enclosure @relation(fields: [enclosureId], references: [id])
+  id          String    @id @default(uuid())
+  assignedAt  DateTime  @default(now())
+  staffId     String
   enclosureId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  enclosure   Enclosure @relation(fields: [enclosureId], references: [id])
+  staff       User      @relation(fields: [staffId], references: [id])
+
+  @@index([staffId])
+  @@index([enclosureId])
+  @@index([assignedAt])
+  @@index([createdAt])
+  @@index([staffId, enclosureId])
+  @@index([enclosureId, assignedAt])
 }
 
 model FeedingRecord {
@@ -87,15 +90,21 @@ model FeedingRecord {
   foodType    String
   quantity    String?
   feedingTime DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  staffId     String
+  animalId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  staff       User     @relation(fields: [staffId], references: [id])
 
-  // Relations
-  staff   User   @relation(fields: [staffId], references: [id])
-  staffId String
-
-  animal   Animal @relation(fields: [animalId], references: [id])
-  animalId String
+  @@index([staffId])
+  @@index([animalId])
+  @@index([foodType])
+  @@index([feedingTime])
+  @@index([createdAt])
+  @@index([animalId, feedingTime])
+  @@index([staffId, feedingTime])
+  @@index([animalId, foodType])
 }
 
 model HealthRecord {
@@ -103,13 +112,25 @@ model HealthRecord {
   checkupDate DateTime
   notes       String
   medication  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  animalId    String
+  vetId       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  vet         User     @relation("VetHealthRecords", fields: [vetId], references: [id])
 
-  // Relations
-  animal   Animal @relation(fields: [animalId], references: [id])
-  animalId String
+  @@index([animalId])
+  @@index([vetId])
+  @@index([checkupDate])
+  @@index([createdAt])
+  @@index([animalId, checkupDate])
+  @@index([vetId, checkupDate])
+  @@index([animalId, vetId])
+}
 
-  vet   User   @relation("VetHealthRecords", fields: [vetId], references: [id])
-  vetId String
+enum Role {
+  ADMIN
+  STAFF
+  VET
+  USER
 }
