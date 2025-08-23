@@ -8,6 +8,7 @@ import enclosureRoutes from "./routes/enclosure.routes";
 import enclosureStaffRoutes from "./routes/enclosureStaff.routes";
 import feedingRoutes from "./routes/feedingRecord.routes";
 import healthCheckRoutes from "./routes/healthRecord.routes";
+import feedingScheduleRoutes from "./routes/feedingSchedule.routes";
 import cors from "cors";
 
 const app = express();
@@ -37,6 +38,7 @@ app.use(enclosureRoutes);
 app.use(enclosureStaffRoutes);
 app.use(feedingRoutes);
 app.use(healthCheckRoutes);
+app.use(feedingScheduleRoutes);
 
 // Auth and user routes
 app.use("/api/auth", authRoutes);
