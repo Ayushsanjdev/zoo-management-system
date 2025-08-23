@@ -1,6 +1,5 @@
 import React from "react";
 import Logo from "../common/Logo";
-import SearchBar from "../common/SearchBar";
 import DesktopNavigation from "../navigation/DesktopNavigation";
 import { Bell } from "lucide-react";
 import MobileMenuButton from "../navigation/MobileMenuButton";
@@ -12,7 +11,7 @@ const Header = ({ mobileMenuOpen, setMobileMenuOpen }) => (
       <div className='flex items-center space-x-4'>
         <Logo />
         <div className='hidden md:block h-6 w-px bg-gray-600' />
-        <SearchBar />
+        {/* <SearchBar /> */}
       </div>
 
       <div className='flex items-center space-x-4'>

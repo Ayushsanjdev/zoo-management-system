@@ -1,6 +1,5 @@
 import React from "react";
 import StaffLogo from "../common/StaffLogo";
-import SearchBar from "../common/SearchBar";
 import StaffDesktopNavigation from "../navigation/StaffDesktopNavigation";
 import { Bell, Menu } from "lucide-react";
 import StaffMobileNavigation from "../navigation/StaffMobileNavigation";

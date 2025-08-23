@@ -1,7 +1,6 @@
 import React from "react";
 import StatCard from "./StatCard";
 import QuickActions from "./QuickActions";
-import RecentActivity from "./RecentActivity";
 
 const managementStats = [
   {
@@ -12,13 +11,13 @@ const managementStats = [
     icon: "🦁",
   },
   { label: "Active Staff", value: "89", change: "+3", trend: "up", icon: "👥" },
-  {
-    label: "Today's Visitors",
-    value: "2,458",
-    change: "-156",
-    trend: "down",
-    icon: "🎫",
-  },
+  // {
+  //   label: "Today's Visitors",
+  //   value: "2,458",
+  //   change: "-156",
+  //   trend: "down",
+  //   icon: "🎫",
+  // },
   {
     label: "Health Checkups Due",
     value: "23",
@@ -36,18 +35,18 @@ const DashboardContent = () => (
         Monitor and manage your zoo operations
       </p>
     </div>
+    
 
     {/* Stats Grid */}
-    <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8'>
+    <div className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6 mb-8'>
       {managementStats.map((stat, index) => (
         <StatCard key={index} stat={stat} />
       ))}
     </div>
 
     {/* Main Content Grid */}
-    <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+    <div className='w-full gap-8'>
       <QuickActions />
-      <RecentActivity />
     </div>
   </div>
 );

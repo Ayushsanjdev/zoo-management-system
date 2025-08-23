@@ -12,7 +12,7 @@ const QuickActions = () => {
       description: "Schedule examination",
       color: "blue",
     },
-    { name: "Staff Schedule", description: "Manage shifts", color: "purple" },
+    // { name: "Staff Schedule", description: "Manage shifts", color: "purple" },
     {
       name: "Generate Report",
       description: "Create daily summary",
@@ -23,7 +23,7 @@ const QuickActions = () => {
   return (
     <div className='bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 p-6'>
       <h3 className='text-lg font-semibold text-white mb-4'>Quick Actions</h3>
-      <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+      <div className='grid grid-cols-1 sm:grid-cols-1 gap-3'>
         {actions.map((action) => (
           <button
             key={action.name}
