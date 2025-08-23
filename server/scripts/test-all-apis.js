@@ -72,7 +72,7 @@ async function authenticate() {
 
     // For now, we'll use a simple approach - in a real scenario, you'd call the login endpoint
     // This is just for testing purposes
-    authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZjllZGUzNC1iZWIzLTQyNmQtOWE0Ni00MzZjOGI0ZjEyMTAiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTU5MzA3NTUsImV4cCI6MTc1NTk3Mzk1NX0.vvWA6_4SQEMQApTG04Z9wpE38qXsYBjmLPJhMK433fw';
+    authToken = 'fake-jwt-token-for-testing'; // Replace with actual token retrieval logic
     logSuccess('Authentication setup complete');
   } catch (error) {
     logError('Authentication failed', error);
