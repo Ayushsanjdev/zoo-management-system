@@ -9,35 +9,37 @@ datasource db {
 }
 
 model User {
-  id             String           @id @default(uuid())
-  name           String
-  email          String           @unique
-  password       String
-  role           Role             @default(USER)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  enclosureStaff EnclosureStaff[]
-  feedingRecords FeedingRecord[]
-  healthRecords  HealthRecord[]   @relation("VetHealthRecords")
+  id               String            @id @default(uuid())
+  name             String
+  email            String            @unique
+  password         String
+  role             Role              @default(USER)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  enclosureStaff   EnclosureStaff[]
+  feedingRecords   FeedingRecord[]
+  healthRecords    HealthRecord[]    @relation("VetHealthRecords")
+  feedingSchedules FeedingSchedule[]
 
   @@index([role])
   @@index([createdAt])
 }
 
 model Animal {
-  id             String          @id @default(uuid())
-  name           String
-  species        String
-  scientificName String?
-  age            Int?
-  gender         String?
-  healthStatus   String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  enclosureId    String?
-  enclosure      Enclosure?      @relation(fields: [enclosureId], references: [id])
-  feedingRecords FeedingRecord[]
-  healthRecords  HealthRecord[]
+  id               String            @id @default(uuid())
+  name             String
+  species          String
+  scientificName   String?
+  age              Int?
+  gender           String?
+  healthStatus     String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  enclosureId      String?
+  enclosure        Enclosure?        @relation(fields: [enclosureId], references: [id])
+  feedingRecords   FeedingRecord[]
+  healthRecords    HealthRecord[]
+  feedingSchedules FeedingSchedule[]
 
   @@index([species])
   @@index([healthStatus])
@@ -86,16 +88,19 @@ model EnclosureStaff {
 }
 
 model FeedingRecord {
-  id          String   @id @default(uuid())
+  id          String           @id @default(uuid())
   foodType    String
   quantity    String?
-  feedingTime DateTime @default(now())
+  feedingTime DateTime         @default(now())
+  notes       String?
   staffId     String
   animalId    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  animal      Animal   @relation(fields: [animalId], references: [id])
-  staff       User     @relation(fields: [staffId], references: [id])
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  animal      Animal           @relation(fields: [animalId], references: [id])
+  staff       User             @relation(fields: [staffId], references: [id])
+  schedule    FeedingSchedule? @relation(fields: [scheduleId], references: [id])
+  scheduleId  String?
 
   @@index([staffId])
   @@index([animalId])
@@ -105,6 +110,34 @@ model FeedingRecord {
   @@index([animalId, feedingTime])
   @@index([staffId, feedingTime])
   @@index([animalId, foodType])
+}
+
+model FeedingSchedule {
+  id          String    @id @default(uuid())
+  name        String?
+  foodType    String
+  quantity    String
+  feedingTime DateTime
+  frequency   Frequency
+  daysOfWeek  String?
+  isActive    Boolean   @default(true)
+  startDate   DateTime  @default(now())
+  endDate     DateTime?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  animal   Animal @relation(fields: [animalId], references: [id])
+  animalId String
+
+  assignedStaff   User?   @relation(fields: [assignedStaffId], references: [id])
+  assignedStaffId String?
+
+  feedingRecords FeedingRecord[]
+
+  @@index([animalId])
+  @@index([feedingTime])
+  @@index([frequency])
 }
 
 model HealthRecord {
@@ -133,4 +166,13 @@ enum Role {
   STAFF
   VET
   USER
+}
+
+enum Frequency {
+  ONCE_DAILY
+  TWICE_DAILY
+  THREE_TIMES_DAILY
+  WEEKLY
+  TWICE_WEEKLY
+  CUSTOM
 }
