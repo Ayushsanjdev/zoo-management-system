@@ -1,5 +1,6 @@
 import { AnimalService } from '../services/animal.service';
 import { Request, Response } from 'express';
+import { parsePaginationParams, parseFilterParams } from '../utils/pagination';
 
 const animalService = new AnimalService();
 
@@ -15,8 +16,11 @@ export class AnimalController {
 
   async getAll(req: Request, res: Response) {
     try {
-      const animals = await animalService.getAllAnimals(req.query);
-      res.json(animals);
+      const pagination = parsePaginationParams(req.query);
+      const filters = parseFilterParams(req.query);
+      
+      const result = await animalService.getAllAnimals(filters, pagination);
+      res.json(result);
     } catch (error) {
       res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
     }
@@ -47,6 +51,33 @@ export class AnimalController {
       res.json(animal);
     } catch (error) {
       res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  async getFilterOptions(req: Request, res: Response) {
+    try {
+      const options = await animalService.getFilterOptions();
+      res.json(options);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  async getSpeciesList(req: Request, res: Response) {
+    try {
+      const species = await animalService.getSpeciesList();
+      res.json(species);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  async getHealthStatusList(req: Request, res: Response) {
+    try {
+      const healthStatuses = await animalService.getHealthStatusList();
+      res.json(healthStatuses);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
     }
   }
 }

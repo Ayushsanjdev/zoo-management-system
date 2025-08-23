@@ -1,5 +1,6 @@
 import { AnimalRepository } from '../repositories/animal.repository';
 import { AnimalDTO } from '../models/animal.model';
+import { PaginationParams, FilterParams, PaginationResponse } from '../utils/pagination';
 
 const animalRepository = new AnimalRepository();
 
@@ -16,12 +17,11 @@ export class AnimalService {
     });
   }
 
-  async getAllAnimals(filters: any) {
-    // Map query params to prisma filters
-    const prismaFilters: any = {};
-    if (filters.species) prismaFilters.species = filters.species;
-    if (filters.health_status) prismaFilters.healthStatus = filters.health_status;
-    return animalRepository.findAll(prismaFilters);
+  async getAllAnimals(
+    filters: FilterParams = {},
+    pagination: PaginationParams = { page: 1, limit: 10, sortBy: 'createdAt', sortOrder: 'desc' }
+  ): Promise<PaginationResponse<any>> {
+    return animalRepository.findAll(filters, pagination);
   }
 
   async getAnimalById(id: string) {
@@ -42,5 +42,26 @@ export class AnimalService {
 
   async deleteAnimal(id: string) {
     return animalRepository.delete(id);
+  }
+
+  async getSpeciesList(): Promise<string[]> {
+    return animalRepository.getSpeciesList();
+  }
+
+  async getHealthStatusList(): Promise<string[]> {
+    return animalRepository.getHealthStatusList();
+  }
+
+  async getFilterOptions() {
+    const [species, healthStatuses] = await Promise.all([
+      this.getSpeciesList(),
+      this.getHealthStatusList(),
+    ]);
+
+    return {
+      species,
+      healthStatuses,
+      genders: ['Male', 'Female', 'Unknown'],
+    };
   }
 }

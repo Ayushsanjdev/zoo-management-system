@@ -1,25 +1,100 @@
-import { PrismaClient, Animal } from '../generated/prisma/client';
+import { Animal } from '../generated/prisma/client';
+import { BaseRepository } from './base.repository';
+import { FilterParams } from '../utils/pagination';
 
-const prisma = new PrismaClient();
-
-export class AnimalRepository {
-  async create(data: any): Promise<Animal> {
-    return prisma.animal.create({ data });
+export class AnimalRepository extends BaseRepository<Animal> {
+  constructor() {
+    super('animal');
   }
 
-  async findAll(filters: any = {}): Promise<Animal[]> {
-    return prisma.animal.findMany({ where: filters });
+  protected buildWhereClause(filters: FilterParams): any {
+    const where: any = {};
+
+    if (filters.species) {
+      where.species = { contains: filters.species, mode: 'insensitive' };
+    }
+
+    if (filters.healthStatus) {
+      where.healthStatus = { contains: filters.healthStatus, mode: 'insensitive' };
+    }
+
+    if (filters.gender) {
+      where.gender = filters.gender;
+    }
+
+    if (filters.enclosureId) {
+      where.enclosureId = filters.enclosureId;
+    }
+
+    if (filters.ageMin !== undefined || filters.ageMax !== undefined) {
+      where.age = {};
+      if (filters.ageMin !== undefined) where.age.gte = filters.ageMin;
+      if (filters.ageMax !== undefined) where.age.lte = filters.ageMax;
+    }
+
+    if (filters.search) {
+      where.OR = [
+        { name: { contains: filters.search, mode: 'insensitive' } },
+        { species: { contains: filters.search, mode: 'insensitive' } },
+        { scientificName: { contains: filters.search, mode: 'insensitive' } },
+      ];
+    }
+
+    return where;
   }
 
-  async findById(id: string): Promise<Animal | null> {
-    return prisma.animal.findUnique({ where: { id } });
+  async getSpeciesList(): Promise<string[]> {
+    const species = await this.prisma.animal.findMany({
+      select: { species: true },
+      distinct: ['species'],
+      orderBy: { species: 'asc' },
+    });
+    return species.map(s => s.species);
   }
 
-  async update(id: string, data: any): Promise<Animal> {
-    return prisma.animal.update({ where: { id }, data });
+  async getHealthStatusList(): Promise<string[]> {
+    const healthStatuses = await this.prisma.animal.findMany({
+      select: { healthStatus: true },
+      distinct: ['healthStatus'],
+      orderBy: { healthStatus: 'asc' },
+    });
+    return healthStatuses.map(h => h.healthStatus).filter((status): status is string => status !== null);
   }
 
-  async delete(id: string): Promise<Animal> {
-    return prisma.animal.delete({ where: { id } });
+  // Override methods to include enclosure data
+  async findAll(filters: FilterParams = {}, pagination: any = { page: 1, limit: 10, sortBy: 'createdAt', sortOrder: 'desc' }) {
+    return super.findAll(filters, pagination, {
+      enclosure: {
+        select: {
+          id: true,
+          name: true,
+          type: true,
+        },
+      },
+    });
+  }
+
+  async findById(id: string) {
+    return super.findById(id, {
+      enclosure: {
+        select: {
+          id: true,
+          name: true,
+          type: true,
+        },
+      },
+    });
+  }
+
+  async update(id: string, data: any) {
+    return super.update(id, data, {
+      enclosure: {
+        select: {
+          id: true,
+          name: true,
+          type: true,
+        },
+      },
+    });
   }
 }
