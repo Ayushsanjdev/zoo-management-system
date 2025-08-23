@@ -1,9 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserRole } from "../types";
-import { AppError } from "../utils/AppError";
-import { LoginInput, RegisterInput, UpdateInput } from "../validation/auth";
 import prisma from "../prisma/client";
+import { AppError } from "../utils/AppError";
+import { LoginInput, RegisterInput } from "../validation/auth";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -15,7 +14,9 @@ export async function registerUser({
 }: RegisterInput) {
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
-    throw new Error("User already exists");
+    throw new AppError(400, "User already exists", [
+      { field: "email", message: "user with same email already exists" },
+    ]);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -30,12 +31,12 @@ export async function registerUser({
 export async function loginUser({ email, password }: LoginInput) {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    throw new Error("Invalid credentials");
+    if (!user) throw new AppError(400, "Invalid credentials");
   }
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
-    throw new Error("Invalid credentials");
+    if (!user) throw new AppError(400, "Invalid credentials");
   }
 
   const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {

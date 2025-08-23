@@ -2,13 +2,19 @@ import express from "express";
 import { errorHandler } from "./middleware/error";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
-import animalRoutes from './routes/animal.routes';
-import enclosureRoutes from './routes/enclosure.routes';
-import enclosureStaffRoutes from './routes/enclosureStaff.routes';
-import feedingRoutes from './routes/feedingRecord.routes';
-import healthCheckRoutes from './routes/healthRecord.routes';
+import animalRoutes from "./routes/animal.routes";
+import enclosureRoutes from "./routes/enclosure.routes";
+import enclosureStaffRoutes from "./routes/enclosureStaff.routes";
+import feedingRoutes from "./routes/feedingRecord.routes";
+import healthCheckRoutes from "./routes/healthRecord.routes";
+import cors from "cors";
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 app.use(express.json());
 
 app.use(animalRoutes);

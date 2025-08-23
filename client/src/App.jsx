@@ -1,46 +1,54 @@
-import React, { useState } from "react";
-import SafariAnimals from "./components/common/SafariAnimals";
-import BackgroundDecoration from "./components/common/BackgroundDecoration";
-import Header from "./components/layout/Header";
-import DashboardContent from "./components/dashboard/DashboardContents";
-import StaffDashboardContent from "./components/staff/StaffDashboardContent";
-import StaffHeader from "./components/staff/StaffHeader";
+import React from "react";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Dashboard from "./pages/Dashboard";
+import LoginPage from "./pages/Login";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
+import PublicRoute from "./components/routes/PublicRoute";
 
-const USER_TYPE = "Admin";
-
-function App() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+export default function App() {
   return (
-    <div className='min-h-screen bg-gradient-to-br from-green-900 via-emerald-800 to-green-900 relative overflow-hidden'>
-      <SafariAnimals />
-      <div className='relative'>
-        <BackgroundDecoration position='top' />
-        <BackgroundDecoration position='bottom' />
-      </div>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<RedirectRoot />} />
 
-      <div className='relative z-10'>
-        {USER_TYPE === "Admin" ? (
-          <Header
-            mobileMenuOpen={mobileMenuOpen}
-            setMobileMenuOpen={setMobileMenuOpen}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
           />
-        ) : (
-          <StaffHeader
-            mobileMenuOpen={mobileMenuOpen}
-            setMobileMenuOpen={setMobileMenuOpen}
+
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
           />
-        )}
-        <main>
-          {USER_TYPE === "Admin" ? (
-            <DashboardContent />
-          ) : (
-            <StaffDashboardContent />
-          )}
-        </main>
-      </div>
-    </div>
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 
-export default App;
+function RedirectRoot() {
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Loading...</p>;
+
+  return user ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    <Navigate to="/login" replace />
+  );
+}
