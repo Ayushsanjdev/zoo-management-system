@@ -1,5 +1,6 @@
 import { EnclosureService } from '../services/enclosure.service';
 import { Request, Response } from 'express';
+import { parsePaginationParams, parseFilterParams } from '../utils/pagination';
 
 const enclosureService = new EnclosureService();
 
@@ -15,8 +16,11 @@ export class EnclosureController {
 
   async getAll(req: Request, res: Response) {
     try {
-      const enclosures = await enclosureService.getAllEnclosures(req.query);
-      res.json(enclosures);
+      const pagination = parsePaginationParams(req.query);
+      const filters = parseFilterParams(req.query);
+      
+      const result = await enclosureService.getAllEnclosures(filters, pagination);
+      res.json(result);
     } catch (error) {
       res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
     }
@@ -49,4 +53,24 @@ export class EnclosureController {
       res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
     }
   }
+
+  async getFilterOptions(req: Request, res: Response) {
+    try {
+      const options = await enclosureService.getFilterOptions();
+      res.json(options);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  async getTypeList(req: Request, res: Response) {
+    try {
+      const types = await enclosureService.getTypeList();
+      res.json(types);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+
 }

@@ -1,5 +1,6 @@
 import { EnclosureStaffService } from '../services/enclosureStaff.service';
 import { Request, Response } from 'express';
+import { parsePaginationParams, parseFilterParams } from '../utils/pagination';
 
 const enclosureStaffService = new EnclosureStaffService();
 
@@ -15,8 +16,11 @@ export class EnclosureStaffController {
 
   async getAll(req: Request, res: Response) {
     try {
-      const enclosureStaff = await enclosureStaffService.getAllEnclosureStaff(req.query);
-      res.json(enclosureStaff);
+      const pagination = parsePaginationParams(req.query);
+      const filters = parseFilterParams(req.query);
+      
+      const result = await enclosureStaffService.getAllEnclosureStaff(filters, pagination);
+      res.json(result);
     } catch (error) {
       res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
     }
@@ -47,6 +51,33 @@ export class EnclosureStaffController {
       res.json(enclosureStaff);
     } catch (error) {
       res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  async getFilterOptions(req: Request, res: Response) {
+    try {
+      const options = await enclosureStaffService.getFilterOptions();
+      res.json(options);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  async getStaffList(req: Request, res: Response) {
+    try {
+      const staffIds = await enclosureStaffService.getStaffList();
+      res.json(staffIds);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  async getEnclosureList(req: Request, res: Response) {
+    try {
+      const enclosureIds = await enclosureStaffService.getEnclosureList();
+      res.json(enclosureIds);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
     }
   }
 }

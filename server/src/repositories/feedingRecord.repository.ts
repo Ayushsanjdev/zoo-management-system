@@ -1,25 +1,138 @@
-import { PrismaClient, FeedingRecord } from '../generated/prisma/client';
+import { FeedingRecord } from '../generated/prisma/client';
+import { BaseRepository } from './base.repository';
+import { FilterParams } from '../utils/pagination';
 
-const prisma = new PrismaClient();
-
-export class FeedingRecordRepository {
-  async create(data: any): Promise<FeedingRecord> {
-    return prisma.feedingRecord.create({ data });
+export class FeedingRecordRepository extends BaseRepository<FeedingRecord> {
+  constructor() {
+    super('feedingRecord');
   }
 
-  async findAll(filters: any = {}): Promise<FeedingRecord[]> {
-    return prisma.feedingRecord.findMany({ where: filters });
+  protected buildWhereClause(filters: FilterParams): any {
+    const where: any = {};
+
+    if (filters.staffId) {
+      where.staffId = filters.staffId;
+    }
+
+    if (filters.animalId) {
+      where.animalId = filters.animalId;
+    }
+
+    if (filters.foodType) {
+      where.foodType = { contains: filters.foodType, mode: 'insensitive' };
+    }
+
+    if (filters.feedingTimeStart || filters.feedingTimeEnd) {
+      where.feedingTime = {};
+      if (filters.feedingTimeStart) where.feedingTime.gte = new Date(filters.feedingTimeStart);
+      if (filters.feedingTimeEnd) where.feedingTime.lte = new Date(filters.feedingTimeEnd);
+    }
+
+    if (filters.quantityMin !== undefined || filters.quantityMax !== undefined) {
+      where.quantity = {};
+      if (filters.quantityMin !== undefined) where.quantity.gte = filters.quantityMin;
+      if (filters.quantityMax !== undefined) where.quantity.lte = filters.quantityMax;
+    }
+
+    if (filters.search) {
+      where.OR = [
+        { foodType: { contains: filters.search, mode: 'insensitive' } },
+        { staff: { name: { contains: filters.search, mode: 'insensitive' } } },
+        { animal: { name: { contains: filters.search, mode: 'insensitive' } } },
+        { animal: { species: { contains: filters.search, mode: 'insensitive' } } },
+      ];
+    }
+
+    return where;
   }
 
-  async findById(id: string): Promise<FeedingRecord | null> {
-    return prisma.feedingRecord.findUnique({ where: { id } });
+  async getFoodTypeList(): Promise<string[]> {
+    const foodTypes = await this.prisma.feedingRecord.findMany({
+      select: { foodType: true },
+      distinct: ['foodType'],
+      orderBy: { foodType: 'asc' },
+    });
+    return foodTypes.map(f => f.foodType);
   }
 
-  async update(id: string, data: any): Promise<FeedingRecord> {
-    return prisma.feedingRecord.update({ where: { id }, data });
+  async getStaffList(): Promise<Array<{ id: string; name: string; email: string }>> {
+    const staff = await this.prisma.user.findMany({
+      where: { role: 'STAFF' },
+      select: { id: true, name: true, email: true },
+      orderBy: { name: 'asc' },
+    });
+    return staff;
   }
 
-  async delete(id: string): Promise<FeedingRecord> {
-    return prisma.feedingRecord.delete({ where: { id } });
+  async getAnimalList(): Promise<Array<{ id: string; name: string; species: string }>> {
+    const animals = await this.prisma.animal.findMany({
+      select: { id: true, name: true, species: true },
+      orderBy: { name: 'asc' },
+    });
+    return animals;
+  }
+
+  // Override methods to include related data
+  async findAll(filters: FilterParams = {}, pagination: any = { page: 1, limit: 10, sortBy: 'createdAt', sortOrder: 'desc' }) {
+    return super.findAll(filters, pagination, {
+      staff: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      },
+      animal: {
+        select: {
+          id: true,
+          name: true,
+          species: true,
+          healthStatus: true,
+        },
+      },
+    });
+  }
+
+  async findById(id: string) {
+    return super.findById(id, {
+      staff: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      },
+      animal: {
+        select: {
+          id: true,
+          name: true,
+          species: true,
+          healthStatus: true,
+        },
+      },
+    });
+  }
+
+  async update(id: string, data: any) {
+    return super.update(id, data, {
+      staff: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      },
+      animal: {
+        select: {
+          id: true,
+          name: true,
+          species: true,
+          healthStatus: true,
+        },
+      },
+    });
   }
 }
