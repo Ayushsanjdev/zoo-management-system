@@ -1,3 +1,8 @@
+import React from "react";
+import StatusBadge from "../common/StatusBadge";
+import ActionButton from "../common/ActionButton";
+import { Edit, Eye, Trash2 } from "lucide-react";
+
 const AnimalTable = ({ animals, onEdit, onDelete, onView }) => (
   <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700 overflow-hidden">
     <div className="overflow-x-auto">

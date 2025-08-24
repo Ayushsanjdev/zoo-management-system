@@ -6,11 +6,11 @@ import RecentActivity from "./RecentActivity";
 //get all count from the server
 const getAnimalCount = async () => {
   //base url
-  const baseUrl = "http://localhost:3000";
+  const baseUrl = "http://localhost:4000";
   const response = await fetch(`${baseUrl}/api/animals/count`, {
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   const data = await response.json();
@@ -18,12 +18,11 @@ const getAnimalCount = async () => {
 };
 
 const getEnclosureStaffCount = async () => {
-
-  const baseUrl = "http://localhost:3000";
+  const baseUrl = "http://localhost:4000";
   const response = await fetch(`${baseUrl}/api/enclosure-staff/count`, {
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   const data = await response.json();
@@ -34,26 +33,51 @@ let enclosureStaffCountData = await getEnclosureStaffCount();
 
 let animalCountData = await getAnimalCount();
 
+// const managementStats = [
+//   {
+//     label: "Animals Under Care",
+//     value: animalCountData.count.toString(),
+//     change: animalCountData.addedToday,
+//     trend: "up",
+//     icon: "🦁",
+//   },
+//   { label: "Active Staff", value: enclosureStaffCountData.count, change: enclosureStaffCountData.addedToday, trend: "up", icon: "👥" },
+//   {
+//     label: "Today's Visitors",
+//     value: "2,458",
+//     change: "-156",
+//     trend: "down",
+//     icon: "🎫",
+//   },
+//   {
+//     label: "Health Checkups Due",
+//     value: "23",
+//     change: "+5",
+//     trend: "urgent",
+//     icon: "🏥",
+//   },
+// ];
+
 const managementStats = [
   {
     label: "Animals Under Care",
-    value: animalCountData.count.toString(),
-    change: animalCountData.addedToday,
+    value: "53",
+    change: "+12",
     trend: "up",
     icon: "🦁",
   },
-  { label: "Active Staff", value: enclosureStaffCountData.count, change: enclosureStaffCountData.addedToday, trend: "up", icon: "👥" },
+  { label: "Active Staff", value: "8", change: "+3", trend: "up", icon: "👥" },
   {
     label: "Today's Visitors",
-    value: "2,458",
-    change: "-156",
+    value: "N/A",
+    change: "N/A",
     trend: "down",
     icon: "🎫",
   },
   {
     label: "Health Checkups Due",
-    value: "23",
-    change: "+5",
+    value: "2",
+    change: "N/A",
     trend: "urgent",
     icon: "🏥",
   },
