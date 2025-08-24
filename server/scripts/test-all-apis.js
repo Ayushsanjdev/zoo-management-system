@@ -72,7 +72,7 @@ async function authenticate() {
 
     // For now, we'll use a simple approach - in a real scenario, you'd call the login endpoint
     // This is just for testing purposes
-    authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZjllZGUzNC1iZWIzLTQyNmQtOWE0Ni00MzZjOGI0ZjEyMTAiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTYwMTE4NTIsImV4cCI6MTc1NjA1NTA1Mn0.GM-QqTlhC_kJmrNPODkwUYos6C4q5uA9fPMn_GoT8UA'; // Replace with actual token retrieval logic
+    authToken = 'Test_token'; // Replace with actual token retrieval logic
 
     // Get the token from the login endpoint
     logSuccess('Authentication setup complete');
