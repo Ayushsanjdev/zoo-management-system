@@ -26,6 +26,15 @@ export class AnimalController {
     }
   }
 
+  async getCount(req: Request, res: Response) {
+    try {
+      const count = await animalService.getAnimalCount();
+      res.json({ count });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
   async getById(req: Request, res: Response) {
     try {
       const animal = await animalService.getAnimalById(req.params.id);

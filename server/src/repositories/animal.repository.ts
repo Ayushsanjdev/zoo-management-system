@@ -85,6 +85,20 @@ export class AnimalRepository extends BaseRepository<Animal> {
       },
     });
   }
+  
+
+  async count() {
+    return {
+      count: await this.prisma.animal.count(),
+      addedToday: await this.prisma.animal.count({
+        where: {
+          createdAt: {
+            gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          },
+        },
+      }),
+    };
+  }
 
   async update(id: string, data: any) {
     return super.update(id, data, {

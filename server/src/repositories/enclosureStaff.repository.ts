@@ -49,6 +49,19 @@ export class EnclosureStaffRepository extends BaseRepository<EnclosureStaff> {
     return staffIds.map(s => s.staffId);
   }
 
+  async count() {
+    return {
+      count: await this.prisma.enclosureStaff.count(),
+      addedToday: await this.prisma.enclosureStaff.count({
+        where: {
+          createdAt: {
+            gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          },
+        },
+      }),
+    };
+  }
+
   async getEnclosureList(): Promise<string[]> {
     const enclosureIds = await this.prisma.enclosureStaff.findMany({
       select: { enclosureId: true },

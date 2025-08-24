@@ -3,15 +3,46 @@ import StatCard from "./StatCard";
 import QuickActions from "./QuickActions";
 import RecentActivity from "./RecentActivity";
 
+//get all count from the server
+const getAnimalCount = async () => {
+  //base url
+  const baseUrl = "http://localhost:3000";
+  const response = await fetch(`${baseUrl}/api/animals/count`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  const data = await response.json();
+  return data.count;
+};
+
+const getEnclosureStaffCount = async () => {
+
+  const baseUrl = "http://localhost:3000";
+  const response = await fetch(`${baseUrl}/api/enclosure-staff/count`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  const data = await response.json();
+  return data.count;
+};
+
+let enclosureStaffCountData = await getEnclosureStaffCount();
+
+let animalCountData = await getAnimalCount();
+
 const managementStats = [
   {
     label: "Animals Under Care",
-    value: "1,247",
-    change: "+12",
+    value: animalCountData.count.toString(),
+    change: animalCountData.addedToday,
     trend: "up",
     icon: "🦁",
   },
-  { label: "Active Staff", value: "89", change: "+3", trend: "up", icon: "👥" },
+  { label: "Active Staff", value: enclosureStaffCountData.count, change: enclosureStaffCountData.addedToday, trend: "up", icon: "👥" },
   {
     label: "Today's Visitors",
     value: "2,458",
