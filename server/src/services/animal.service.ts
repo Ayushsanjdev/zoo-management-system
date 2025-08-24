@@ -24,6 +24,10 @@ export class AnimalService {
     return animalRepository.findAll(filters, pagination);
   }
 
+  async getAnimalCount() {
+    return animalRepository.count();
+  }
+
   async getAnimalById(id: string) {
     return animalRepository.findById(id);
   }

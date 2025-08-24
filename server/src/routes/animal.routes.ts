@@ -29,6 +29,11 @@ router.get('/api/animals/health-status',
   (req, res) => controller.getHealthStatusList(req, res)
 );
 
+router.get('/api/animals/count', 
+  authenticateToken,
+  (req, res) => controller.getCount(req, res)
+);
+
 // Public routes (view only) - now with authentication required
 router.get('/api/animals', 
   authenticateToken, 

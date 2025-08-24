@@ -44,6 +44,10 @@ export class EnclosureStaffService {
     return enclosureStaffRepository.getEnclosureList();
   }
 
+  async getEnclosureStaffCount() {
+    return enclosureStaffRepository.count();
+  }
+
   async getFilterOptions() {
     const [staffIds, enclosureIds] = await Promise.all([
       this.getStaffList(),

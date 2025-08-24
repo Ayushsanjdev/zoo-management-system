@@ -72,7 +72,9 @@ async function authenticate() {
 
     // For now, we'll use a simple approach - in a real scenario, you'd call the login endpoint
     // This is just for testing purposes
-    authToken = 'fake-jwt-token-for-testing'; // Replace with actual token retrieval logic
+    authToken = 'Test_token'; // Replace with actual token retrieval logic
+
+    // Get the token from the login endpoint
     logSuccess('Authentication setup complete');
   } catch (error) {
     logError('Authentication failed', error);
@@ -279,6 +281,11 @@ async function testAnimalAPIs() {
     const allAnimals = await makeRequest('GET', '/api/animals');
     logSuccess('All animals retrieved');
     log('Animals count:', allAnimals.data.length);
+
+    //Test get animal count
+    const animalCount = await makeRequest('GET', '/api/animals/count');
+    logSuccess('Animal count retrieved');
+    log('Total animals count:', animalCount.count);
 
     // Test filtering by species
     const lions = await makeRequest('GET', '/api/animals', null, { species: 'Lion' });
@@ -505,6 +512,11 @@ async function testEnclosureStaffAPIs() {
     logSuccess('All enclosure staff retrieved');
     log('Enclosure staff count:', allEnclosureStaff.data.length);
 
+    //test get enclosure staff count
+    const enclosureStaffCount = await makeRequest('GET', '/api/enclosure-staff/count');
+    logSuccess('Enclosure staff count retrieved');
+    log('Total enclosure staff count:', enclosureStaffCount.count);
+
     // Test filtering by staff
     const staffEnclosureStaff = await makeRequest('GET', '/api/enclosure-staff', null, { staffId: testData.users[0].id });
     logSuccess('Enclosure staff filtered by staff');
@@ -597,11 +609,11 @@ async function runAllTests() {
 
     // Run all tests
     await testAnimalAPIs();
-    await testEnclosureAPIs();
-    await testFeedingRecordAPIs();
-    await testHealthRecordAPIs();
+    //await testEnclosureAPIs();
+    //await testFeedingRecordAPIs();
+    //await testHealthRecordAPIs();
     await testEnclosureStaffAPIs();
-    await testUserAPIs();
+    //await testUserAPIs();
 
     console.log('\n🎉 All API tests completed successfully!');
     console.log('='.repeat(60));

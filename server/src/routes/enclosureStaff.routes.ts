@@ -14,6 +14,11 @@ router.get('/api/enclosure-staff/filter-options',
   (req, res) => controller.getFilterOptions(req, res)
 );
 
+router.get('/api/enclosure-staff/count', 
+  authenticateToken,
+  (req, res) => controller.getCount(req, res)
+);
+
 router.get('/api/enclosure-staff/staff', 
   authenticateToken,
   (req, res) => controller.getStaffList(req, res)

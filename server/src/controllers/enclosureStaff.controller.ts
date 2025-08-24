@@ -26,6 +26,15 @@ export class EnclosureStaffController {
     }
   }
 
+  async getCount(req: Request, res: Response) {
+    try {
+      const count = await enclosureStaffService.getEnclosureStaffCount();
+      res.json({ count });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
   async getById(req: Request, res: Response) {
     try {
       const enclosureStaff = await enclosureStaffService.getEnclosureStaffById(req.params.id);
