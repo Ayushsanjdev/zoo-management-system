@@ -1,4 +1,23 @@
-// File: components/navigation/MobileNavigation.jsx
+import React from "react";
+import {
+  Activity,
+  BarChart3,
+  Calendar,
+  Settings,
+  Users,
+  X,
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
+import Logo from "../common/Logo";
+
+const navigation = [
+  { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
+  { name: "Animal Management", href: "/animals", icon: Activity },
+  { name: "Staff Management", href: "/staff", icon: Users },
+  { name: "Scheduling", href: "/scheduling", icon: Calendar },
+  { name: "Settings", href: "/settings", icon: Settings },
+];
+
 const MobileNavigation = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
@@ -26,15 +45,24 @@ const MobileNavigation = ({ isOpen, onClose }) => {
             {navigation.map((item) => {
               const IconComponent = item.icon;
               return (
-                <a
+                <NavLink
                   key={item.name}
-                  href={item.href}
-                  className='group flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-200 hover:text-white hover:bg-gray-700 transition-all duration-200'
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `group flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                      isActive
+                        ? "bg-emerald-600 text-white"
+                        : "text-gray-200 hover:text-white hover:bg-gray-700"
+                    }`
+                  }
                   onClick={() => onClose(false)}
                 >
-                  <IconComponent className='w-5 h-5 text-emerald-400' />
-                  <span className='font-medium'>{item.name}</span>
-                </a>
+                  <IconComponent
+                    className={`w-5 h-5 ${({ isActive }) =>
+                      isActive ? "text-white" : "text-emerald-400"}`}
+                  />
+                  <span>{item.name}</span>
+                </NavLink>
               );
             })}
           </nav>
@@ -43,4 +71,5 @@ const MobileNavigation = ({ isOpen, onClose }) => {
     </div>
   );
 };
+
 export default MobileNavigation;

@@ -4,7 +4,7 @@ import prisma from "../prisma/client";
 import { AppError } from "../utils/AppError";
 import { LoginInput, RegisterInput } from "../validation/auth";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = process.env.JWT_SECRET! || "MY_SECURE_SECRET";
 
 export async function registerUser({
   name,

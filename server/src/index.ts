@@ -1,4 +1,5 @@
 import express from "express";
+import dotenv from 'dotenv';
 import { errorHandler } from "./middleware/error";
 import { corsMiddleware, securityHeaders } from "./middleware/auth";
 import authRoutes from "./routes/auth";
@@ -9,6 +10,8 @@ import enclosureStaffRoutes from "./routes/enclosureStaff.routes";
 import feedingRoutes from "./routes/feedingRecord.routes";
 import healthCheckRoutes from "./routes/healthRecord.routes";
 import cors from "cors";
+
+dotenv.config();
 
 const app = express();
 app.use(
